@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Fragment } from "react";
+
+import Home from './components/layuot/Home';
+import Inspection from './components/inspection/Inspection';
+import Sidebar from "./components/layuot/Sidebar";
+import SearchInspection from "./components/inspection/SearchInspection";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <Router>
+        <Sidebar />
+        <div className="page-content p-2 content">
+          <Switch>
+            <Route exact path="/search-inspection" component={SearchInspection} />
+            <Route exact path="/inspection" component={Inspection} />
+            <Route exact path="/" component={Home} />
+          </Switch>
+        </div>
+
+      </Router>
+    </Fragment>
+
   );
 }
 
