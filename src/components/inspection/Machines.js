@@ -25,7 +25,7 @@ const Machines = ({ machine }) => {
                                     Registrar
                             </button>
 
-                            <Link to="/search-inspection" className="ml-2 btn btn-success">
+                            <Link to={`/search-inspection/${machine.id_machine}`} className="ml-2 btn btn-success">
                                 <i className="fas fa-search mr-1"></i>
                                     Consultar
                             </Link>

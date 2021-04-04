@@ -14,7 +14,7 @@ function App() {
         <Sidebar />
         <div className="page-content p-2 content">
           <Switch>
-            <Route exact path="/search-inspection" component={SearchInspection} />
+            <Route exact path="/search-inspection/:id" component={SearchInspection} />
             <Route exact path="/inspection" component={Inspection} />
             <Route exact path="/" component={Home} />
           </Switch>

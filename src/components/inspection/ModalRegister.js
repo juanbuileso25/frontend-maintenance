@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
+import { saveInspection } from '../../services/index';
+
 const ModalRegister = ({ modal, toggle, machine }) => {
+
 
     const [dataForm, setDataForm] = useState({
         type_inspection: '',
         id_machine: machine.id_machine,
-        date: '',
+        date_i: '',
         observation: '',
         maintenance: 'Si',
         employee: 'Didier'
@@ -19,10 +22,12 @@ const ModalRegister = ({ modal, toggle, machine }) => {
         })
     }
 
-    const sendDataForm = (e) => {
+    const sendDataForm = async (e) => {
         e.preventDefault();
-        console.log(dataForm);
+        await saveInspection(dataForm);
+        toggle();
     }
+
 
     return (
         <div>
@@ -36,7 +41,7 @@ const ModalRegister = ({ modal, toggle, machine }) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="date">Fecha</Label>
-                            <Input type="date" name="date" onChange={handleInputChange} />
+                            <Input type="date" name="date_i" onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Observación</Label>

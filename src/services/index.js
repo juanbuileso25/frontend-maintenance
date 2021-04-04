@@ -21,7 +21,19 @@ export async function saveInspection(inspectionData) {
             method: 'POST',
             data: inspectionData
         });
-        return response;
+        return (response);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function getInspection(id) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/inspection/${id}`,
+            method: 'GET'
+        });
+        return (response);
     } catch (err) {
         console.log(err);
     }
