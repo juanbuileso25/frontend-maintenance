@@ -2,15 +2,29 @@ import { useEffect, useState, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
-import { getInspection } from '../../services/index';
+
+import { getInspection, updateInspection } from '../../services/index';
+import ModalEdit from './ModalEdit';
 
 
 const SearchInspection = () => {
 
+    const [modal, setModal] = useState(false);
     const [inspections, setInspections] = useState([])
+    const [inspectionSelected, setInspectionSelected] = useState({})
 
+
+    const toggle = () => setModal(!modal);
+    const idUpdate = inspectionSelected.id_inspection;
     const { id } = useParams()
+
+    const sendDataFormUpdate = async () => {
+        inspectionSelected.date_i = inspectionSelected.date_i.split('T')[0]
+        await updateInspection(idUpdate, inspectionSelected);
+        toggle();
+    }
 
     useEffect(() => {
         async function loadInspections() {
@@ -21,22 +35,38 @@ const SearchInspection = () => {
             }
         }
         loadInspections();
-    }, []);
+    });
+
+    const handleInputChange = (e) => {
+        setInspectionSelected({
+            ...inspectionSelected,
+            [e.target.name]: e.target.value
+        })
+    }
+
+
+
 
     return (
         <Fragment>
-            <div class="col-md-12 mt-4">
-                <div class="card">
-                    <div class="card-body">
 
-                        <div class="d-md-flex align-items-center">
+            {/* <ModalEdit
+                modal={modal}
+                toggle={toggle}
+                inspectionSelected={inspectionSelected}
+            /> */}
+            <div className="col-md-12 mt-4">
+                <div className="card">
+                    <div className="card-body">
+
+                        <div className="d-md-flex align-items-center">
                             <div>
-                                <h4 class="card-title">Inspecciones a máquina</h4>
+                                <h4 className="card-title">Inspecciones a máquina</h4>
 
                             </div>
-                            <div class="ml-auto">
-                                <div class="dl">
-                                    <select class="custom-select">
+                            <div className="ml-auto">
+                                <div className="dl">
+                                    <select className="custom-select">
                                         <option value="0" selected="">Mensual</option>
                                         <option value="1">Diario</option>
                                         <option value="2">Semanal</option>
@@ -47,18 +77,18 @@ const SearchInspection = () => {
                         </div>
 
                     </div>
-                    <div class="table-responsive">
-                        <table class="table v-middle">
+                    <div className="table-responsive">
+                        <table className="table v-middle">
                             <thead>
-                                <tr class="bg-light">
+                                <tr className="bg-light">
 
-                                    <th class="border-top-0">Tipo</th>
-                                    <th class="border-top-0">Fecha</th>
-                                    <th class="border-top-0">Hora</th>
-                                    <th class="border-top-0">Observación</th>
-                                    <th class="border-top-0">Requiere O.T</th>
-                                    <th class="border-top-0">Encargado</th>
-                                    <th class="border-top-0">Acciones</th>
+                                    <th className="border-top-0">Tipo</th>
+                                    <th className="border-top-0">Fecha</th>
+                                    <th className="border-top-0">Hora</th>
+                                    <th className="border-top-0">Observación</th>
+                                    <th className="border-top-0">Requiere O.T</th>
+                                    <th className="border-top-0">Encargado</th>
+                                    <th className="border-top-0">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,14 +96,14 @@ const SearchInspection = () => {
                                     inspections.map(inspection => (
                                         <tr>
                                             <td>{inspection.type_inspection}</td>
-                                            <td>{inspection.date_i}</td>
+                                            <td>{inspection.date_i.split('T')[0]}</td>
                                             <td>{inspection.time_i}</td>
                                             <td>{inspection.observation}</td>
                                             <td>{inspection.maintenance}</td>
                                             <td>{inspection.employee}</td>
-                                            <td class="text-center">
-                                                <a class="btn btn-warning text-center"><FontAwesomeIcon icon={faEdit} /></a>
-                                                <a class="btn btn-danger ml-2 text-center"><FontAwesomeIcon icon={faTrashAlt} /></a>
+                                            <td className="text-center">
+                                                <a className="btn btn-warning text-center" onClick={() => { setModal(true); setInspectionSelected(inspection); }}><FontAwesomeIcon icon={faEdit} /></a>
+                                                <a className="btn btn-danger ml-2 text-center"><FontAwesomeIcon icon={faTrashAlt} /></a>
                                             </td>
                                         </tr>
                                     ))
@@ -85,6 +115,47 @@ const SearchInspection = () => {
                     </div>
                 </div >
             </div >
+
+
+            <Modal isOpen={modal}>
+                <ModalHeader>EDITAR INSPECCION </ModalHeader>
+                <ModalBody>
+                    <Form>
+                        <FormGroup>
+                            <Label for="exampleEmail">Tipo Inspección</Label>
+                            <Input type="text" value={inspectionSelected.type_inspection} onChange={handleInputChange} name="type_inspection" />
+                        </FormGroup>
+                        {/* <FormGroup>
+                            <Label for="date">Fecha</Label>
+                            <Input type="date" value={date_i} name="date_i" onChange={handleInputChange} />
+                        </FormGroup> */}
+                        <FormGroup>
+                            <Label for="examplePassword">Observación</Label>
+                            <Input type="text" name="observation" value={inspectionSelected.observation} onChange={handleInputChange} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="exampleSelect">Requiere Mantenimiento</Label>
+                            <Input type="select" name="maintenance" value={inspectionSelected.maintenance} onChange={handleInputChange}>
+                                <option>Si</option>
+                                <option>No</option>
+                            </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="exampleSelect">Encargado</Label>
+                            <Input type="select" name="employee" value={inspectionSelected.employee} onChange={handleInputChange}>
+                                <option>Didier</option>
+                                <option>Anderson</option>
+                                <option>Jose</option>
+                            </Input>
+                        </FormGroup>
+                    </Form>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={sendDataFormUpdate}>Guardar</Button>
+                    <Button color="danger" onClick={toggle} >Cancel</Button>
+                </ModalFooter>
+            </Modal>
+
         </Fragment>
 
 

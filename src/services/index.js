@@ -38,3 +38,16 @@ export async function getInspection(id) {
         console.log(err);
     }
 }
+
+export async function updateInspection(id, dataUpdate) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/inspection/${id}`,
+            method: 'PUT',
+            data: dataUpdate
+        });
+        console.log(response);
+    } catch (err) {
+        console.log(err);
+    }
+}
