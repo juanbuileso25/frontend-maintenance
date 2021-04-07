@@ -2,10 +2,9 @@ import { useEffect, useState, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
 
-import { getInspection, updateInspection } from '../../services/index';
+import { getInspection, deleteInspection } from '../../services/index';
 import ModalEdit from './ModalEdit';
 
 
@@ -20,30 +19,25 @@ const SearchInspection = () => {
     const idUpdate = inspectionSelected.id_inspection;
     const { id } = useParams()
 
-    const sendDataFormUpdate = async () => {
-        inspectionSelected.date_i = inspectionSelected.date_i.split('T')[0]
-        await updateInspection(idUpdate, inspectionSelected);
-        toggle();
+
+    const deleteI = async (inspection) => {
+        let idDelete = inspection.id_inspection;
+        const response = await deleteInspection(idDelete);
+        if (response.data.success == true) {
+            const newState = inspections.filter(inspection => inspection.id_inspection !== idDelete);
+            setInspections(newState);
+        }
     }
 
     useEffect(() => {
-        async function loadInspections() {
+        (async () => {
+            console.log('object')
             const response = await getInspection(id);
-
             if (response.status === 200) {
                 setInspections(response.data.value);
             }
-        }
-        loadInspections();
-    });
-
-    const handleInputChange = (e) => {
-        setInspectionSelected({
-            ...inspectionSelected,
-            [e.target.name]: e.target.value
-        })
-    }
-
+        })()
+    }, []);
 
 
 
@@ -103,7 +97,7 @@ const SearchInspection = () => {
                                             <td>{inspection.employee}</td>
                                             <td className="text-center">
                                                 <a className="btn btn-warning text-center" onClick={() => { setModal(true); setInspectionSelected(inspection); }}><FontAwesomeIcon icon={faEdit} /></a>
-                                                <a className="btn btn-danger ml-2 text-center"><FontAwesomeIcon icon={faTrashAlt} /></a>
+                                                <a className="btn btn-danger ml-2 text-center" onClick={() => { deleteI(inspection); }} ><FontAwesomeIcon icon={faTrashAlt} /></a>
                                             </td>
                                         </tr>
                                     ))
@@ -115,47 +109,15 @@ const SearchInspection = () => {
                     </div>
                 </div >
             </div >
-
-
-            <Modal isOpen={modal}>
-                <ModalHeader>EDITAR INSPECCION </ModalHeader>
-                <ModalBody>
-                    <Form>
-                        <FormGroup>
-                            <Label for="exampleEmail">Tipo Inspección</Label>
-                            <Input type="text" value={inspectionSelected.type_inspection} onChange={handleInputChange} name="type_inspection" />
-                        </FormGroup>
-                        {/* <FormGroup>
-                            <Label for="date">Fecha</Label>
-                            <Input type="date" value={date_i} name="date_i" onChange={handleInputChange} />
-                        </FormGroup> */}
-                        <FormGroup>
-                            <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation" value={inspectionSelected.observation} onChange={handleInputChange} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleSelect">Requiere Mantenimiento</Label>
-                            <Input type="select" name="maintenance" value={inspectionSelected.maintenance} onChange={handleInputChange}>
-                                <option>Si</option>
-                                <option>No</option>
-                            </Input>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="exampleSelect">Encargado</Label>
-                            <Input type="select" name="employee" value={inspectionSelected.employee} onChange={handleInputChange}>
-                                <option>Didier</option>
-                                <option>Anderson</option>
-                                <option>Jose</option>
-                            </Input>
-                        </FormGroup>
-                    </Form>
-                </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={sendDataFormUpdate}>Guardar</Button>
-                    <Button color="danger" onClick={toggle} >Cancel</Button>
-                </ModalFooter>
-            </Modal>
-
+            <ModalEdit
+                modal={modal}
+                toggle={toggle}
+                inspections={inspections}
+                setInspections={setInspections}
+                inspectionSelected={inspectionSelected}
+                setInspectionSelected={setInspectionSelected}
+                idUpdate={idUpdate}
+            />
         </Fragment>
 
 

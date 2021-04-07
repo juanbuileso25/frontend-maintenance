@@ -46,8 +46,21 @@ export async function updateInspection(id, dataUpdate) {
             method: 'PUT',
             data: dataUpdate
         });
-        console.log(response);
+        return response;
     } catch (err) {
         console.log(err);
     }
 }
+
+export async function deleteInspection(id) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/inspection/${id}`,
+            method: 'DELETE'
+        });
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+}
+

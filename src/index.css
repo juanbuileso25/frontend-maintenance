@@ -9,6 +9,15 @@ body {
   
 }
 
+.tittle-maintenance {
+  color: #aaa;
+}
+
+.tittle-maintenance:hover {
+  text-decoration: none;
+  color: #aaa;
+}
+
 .vertical-nav {
   background: #222E3C;
   min-width: 17rem;

@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTools, faCarBattery, faFileSignature, faWrench, faUsersCog } from '@fortawesome/free-solid-svg-icons'
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -8,8 +10,8 @@ const Sidebar = () => {
 
 
             <h5 className="text-gray font-weight-bold text-uppercase px-1 ml-3 pb-4 mb-0 mt-5">
-                <Link to="/">
-                    Mantenimiento <i className="fas fa-tools"></i>
+                <Link to="/" className="tittle-maintenance">
+                    Mantenimiento <FontAwesomeIcon icon={faTools} />
                 </Link>
 
             </h5>
@@ -18,28 +20,28 @@ const Sidebar = () => {
 
                 <li className="nav-item">
                     <Link to="/inspection" className="nav-link text-gray active">
-                        <i className="fas fa-car-battery mr-3 text-primary fa-fw"></i>
+                        <FontAwesomeIcon icon={faCarBattery} className="mr-3 fa-fw" />
                         Inspecciones
                     </Link>
                 </li>
 
                 <li className="nav-item">
                     <a className="nav-link text-gray active">
-                        <i className="fas fa-file-signature mr-3 text-primary fa-fw"></i>
+                        <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
                         Ordenes de trabajo
                     </a>
                 </li>
 
                 <li className="nav-item">
                     <a className="nav-link text-gray active">
-                        <i className="fas fa-wrench mr-3 text-primary fa-fw"></i>
+                        <FontAwesomeIcon icon={faWrench} className="mr-3 fa-fw" />
                         Inventarios
                     </a>
                 </li>
 
                 <li className="nav-item">
                     <a className="nav-link text-gray active">
-                        <i className="fas fa-users-cog mr-3 text-primary fa-fw"></i>
+                        <FontAwesomeIcon icon={faUsersCog} className="mr-3 fa-fw" />
                         Requerimientos
                     </a>
                 </li>

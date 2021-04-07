@@ -1,23 +1,32 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
+import { getInspection, updateInspection } from '../../services/index';
+
+const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspections, idUpdate }) => {
 
 
-const ModalEdit = ({ modal, toggle, inspectionSelected }) => {
 
 
+    const [dataFormEdit, setDataFormEdit] = useState({})
 
 
-    const [dataFormEdit, setDataFormEdit] = useState({
-
-    })
 
     useEffect(() => {
-        function loadModal() {
-            setDataFormEdit(inspectionSelected)
-        }
-        loadModal();
-    }, [])
+        (() => {
+            setDataFormEdit(inspectionSelected);
+        })()
+    }, [modal])
 
+    const sendDataFormUpdate = async () => {
+        inspectionSelected.date_i = inspectionSelected.date_i.split('T')[0]
+
+        const response = await updateInspection(idUpdate, dataFormEdit);
+        if (response.data.success == true) {
+            const newData = inspections.map(inspection => inspection.id_inspection == dataFormEdit.id_inspection ? dataFormEdit : inspection);
+            setInspections(newData);
+        }
+        toggle();
+    }
 
     const handleInputChange = (e) => {
         setDataFormEdit({
@@ -42,24 +51,20 @@ const ModalEdit = ({ modal, toggle, inspectionSelected }) => {
                             <Label for="exampleEmail">Tipo Inspección</Label>
                             <Input type="text" value={dataFormEdit.type_inspection} onChange={handleInputChange} name="type_inspection" />
                         </FormGroup>
-                        {/* <FormGroup>
-                            <Label for="date">Fecha</Label>
-                            <Input type="date" value={date_i} name="date_i" onChange={handleInputChange} />
-                        </FormGroup> */}
                         <FormGroup>
                             <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation" />
+                            <Input type="text" name="observation" value={dataFormEdit.observation} onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>
-                            <Input type="select" name="maintenance" >
+                            <Input type="select" name="maintenance" value={dataFormEdit.maintenance} onChange={handleInputChange}>
                                 <option>Si</option>
                                 <option>No</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Encargado</Label>
-                            <Input type="select" name="employee">
+                            <Input type="select" name="employee" value={dataFormEdit.employee} onChange={handleInputChange}>
                                 <option>Didier</option>
                                 <option>Anderson</option>
                                 <option>Jose</option>
@@ -68,7 +73,7 @@ const ModalEdit = ({ modal, toggle, inspectionSelected }) => {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" >Guardar</Button>
+                    <Button color="primary" onClick={sendDataFormUpdate}>Guardar</Button>
                     <Button color="danger" onClick={toggle} >Cancel</Button>
                 </ModalFooter>
             </Modal>

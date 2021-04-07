@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
 import { saveInspection } from '../../services/index';
+import { alertNotification } from '../../services/alerts/alert';
 
 const ModalRegister = ({ modal, toggle, machine }) => {
 
@@ -24,7 +25,10 @@ const ModalRegister = ({ modal, toggle, machine }) => {
 
     const sendDataForm = async (e) => {
         e.preventDefault();
-        await saveInspection(dataForm);
+        const response = await saveInspection(dataForm);
+        if (response.data.success == true) {
+            alertNotification("Echo", "inspección guardada con exito!", "success");
+        }
         toggle();
     }
 
