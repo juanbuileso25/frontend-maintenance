@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
-import { getInspection, updateInspection } from '../../services/index';
+import { updateInspection } from '../../services/index';
+import { alertNotification } from '../../services/alerts/alert';
 
 const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspections, idUpdate }) => {
 
-
-
-
     const [dataFormEdit, setDataFormEdit] = useState({})
-
-
 
     useEffect(() => {
         (() => {
@@ -24,6 +20,9 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
         if (response.data.success == true) {
             const newData = inspections.map(inspection => inspection.id_inspection == dataFormEdit.id_inspection ? dataFormEdit : inspection);
             setInspections(newData);
+            alertNotification("Echo", "Inspeccion modificada con exito !", "success");
+        } else {
+            alertNotification("Error", "No se ha modificado la inspección!", "error");
         }
         toggle();
     }
@@ -34,12 +33,6 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
             [e.target.name]: e.target.value
         })
     }
-
-    // const sendDataForm = (e) => {
-    //     e.preventDefault();
-    //     console.log(dataFormEdit)
-    //     toggle();
-    // }
 
     return (
         <div>

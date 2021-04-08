@@ -44,11 +44,6 @@ const SearchInspection = () => {
     return (
         <Fragment>
 
-            {/* <ModalEdit
-                modal={modal}
-                toggle={toggle}
-                inspectionSelected={inspectionSelected}
-            /> */}
             <div className="col-md-12 mt-4">
                 <div className="card">
                     <div className="card-body">

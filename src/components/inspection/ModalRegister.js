@@ -28,6 +28,8 @@ const ModalRegister = ({ modal, toggle, machine }) => {
         const response = await saveInspection(dataForm);
         if (response.data.success == true) {
             alertNotification("Echo", "inspección guardada con exito!", "success");
+        } else {
+            alertNotification("Error", "No se ha guardado la inspección !", "error");
         }
         toggle();
     }

@@ -26,10 +26,10 @@ const Sidebar = () => {
                 </li>
 
                 <li className="nav-item">
-                    <a className="nav-link text-gray active">
+                    <Link to="/work-order" className="nav-link text-gray active">
                         <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
                         Ordenes de trabajo
-                    </a>
+                    </Link>
                 </li>
 
                 <li className="nav-item">
