@@ -9,6 +9,16 @@ body {
   
 }
 
+.modal-title {
+  width: 100%;
+}
+
+.imgNorma {
+  float: right;
+  margin-right: 0;
+  width: 220px;
+}
+
 .tittle-maintenance {
   color: #aaa;
 }

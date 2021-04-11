@@ -1,13 +1,16 @@
 import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import ModalI from './ModalRegister';
+import ModalWO from '../workOrder/ModalRegister';
 
 
 
-const Machines = ({ machine }) => {
+const Machines = ({ machine, workOrder }) => {
 
-    const [modal, setModal] = useState(false);
-    const toggle = () => setModal(!modal);
+    const [modalI, setModalI] = useState(false);
+    const [modalWO, setModalWO] = useState(false);
+    const toggleI = () => setModalI(!modalI);
+    const toggleWO = () => setModalWO(!modalWO);
 
 
 
@@ -20,7 +23,7 @@ const Machines = ({ machine }) => {
                     <div className="card-body">
                         <h4 className=" mt-1 mb-3 text-center">{machine.name}</h4>
                         <div className="text-center">
-                            <button className="ml-4 btn btn-primary" onClick={() => setModal(true)}>
+                            <button className="ml-4 btn btn-primary" onClick={workOrder == "workOrder" ? () => setModalWO(true) : () => setModalI(true)}>
                                 <i className="fas fa-plus-circle mr-1"></i>
                                     Registrar
                             </button>
@@ -36,8 +39,14 @@ const Machines = ({ machine }) => {
 
 
                 <ModalI
-                    modal={modal}
-                    toggle={toggle}
+                    modal={modalI}
+                    toggle={toggleI}
+                    machine={machine}
+                />
+
+                <ModalWO
+                    modalWO={modalWO}
+                    toggle={toggleWO}
                     machine={machine}
                 />
             </Fragment>

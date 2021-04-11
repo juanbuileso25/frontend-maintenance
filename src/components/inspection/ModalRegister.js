@@ -4,6 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, La
 import { saveInspection } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
 
+
 const ModalRegister = ({ modal, toggle, machine }) => {
 
 
@@ -13,7 +14,8 @@ const ModalRegister = ({ modal, toggle, machine }) => {
         date_i: '',
         observation: '',
         maintenance: 'Si',
-        employee: 'Didier'
+        employee: 'Didier',
+        state: 'A revisión'
     });
 
     const handleInputChange = (e) => {
@@ -25,6 +27,12 @@ const ModalRegister = ({ modal, toggle, machine }) => {
 
     const sendDataForm = async (e) => {
         e.preventDefault();
+        if (dataForm.maintenance == 'Si') {
+            dataForm.state = 'A revisión'
+        } else {
+            dataForm.state = 'Terminada'
+        }
+
         const response = await saveInspection(dataForm);
         if (response.data.success == true) {
             alertNotification("Echo", "inspección guardada con exito!", "success");
@@ -43,31 +51,35 @@ const ModalRegister = ({ modal, toggle, machine }) => {
                     <Form>
                         <FormGroup>
                             <Label for="exampleEmail">Tipo Inspección</Label>
-                            <Input type="email" name="type_inspection" onChange={handleInputChange} />
+                            <Input type="email" name="type_inspection" required onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="date">Fecha</Label>
-                            <Input type="date" name="date_i" onChange={handleInputChange} />
+                            <Input type="date" name="date_i" required onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation" onChange={handleInputChange} />
+                            <Input type="text" name="observation" required onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>
-                            <Input type="select" name="maintenance" onChange={handleInputChange} >
+                            <Input type="select" name="maintenance" required onChange={handleInputChange} >
                                 <option>Si</option>
                                 <option>No</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Encargado</Label>
-                            <Input type="select" name="employee" onChange={handleInputChange} >
+                            <Input type="select" name="employee" required onChange={handleInputChange} >
                                 <option>Didier</option>
                                 <option>Anderson</option>
                                 <option>Jose</option>
                             </Input>
                         </FormGroup>
+                        {/* <FormGroup>
+                            <Label for="exampleSelect">Estado</Label>
+                            <Input name="state" type="text" value={dataForm.maintenance == "Si" ? "En revisión" : "Verificada"} onChange={handleInputChange} />
+                        </FormGroup> */}
                     </Form>
                 </ModalBody>
                 <ModalFooter>
