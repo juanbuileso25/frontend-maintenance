@@ -64,3 +64,16 @@ export async function deleteInspection(id) {
     }
 }
 
+export async function saveWorkOrder(workOrderData) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/work-order`,
+            method: 'POST',
+            data: workOrderData
+        });
+        return (response);
+    } catch (err) {
+        console.log(err);
+    }
+}
+

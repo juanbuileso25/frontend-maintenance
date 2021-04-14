@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 
 import { getInspection } from '../../services/index';
+import { saveWorkOrder } from '../../services/index';
+import { alertNotification } from '../../services/alerts/alert';
 
 
 const ModalRegister = ({ modalWO, toggle, machine }) => {
@@ -44,14 +46,14 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         dataForm.id_inspection = parseInt(dataForm.id_inspection.split(' ')[2])
         e.preventDefault();
 
-        console.log(dataForm)
-        // const response = await saveInspection(dataForm);
-        // if (response.data.success == true) {
-        //     alertNotification("Echo", "inspección guardada con exito!", "success");
-        // } else {
-        //     alertNotification("Error", "No se ha guardado la inspección !", "error");
-        // }
-        // toggle();
+
+        const response = await saveWorkOrder(dataForm);
+        if (response.data.success == true) {
+            alertNotification("Echo", "Orden de trabajo guardada con exito!", "success");
+        } else {
+            alertNotification("Error", "No se ha guardado la orden de trabajo !", "error");
+        }
+        toggle();
     }
 
     return (
