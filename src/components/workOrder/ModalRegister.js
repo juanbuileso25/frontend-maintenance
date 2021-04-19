@@ -29,7 +29,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
             const response = await getInspection(machine.id_machine);
             if (response.status === 200) {
                 let inspect = response.data.value;
-                let newInspectios = inspect.filter(inspection => inspection.state == 'A revisión');
+                let newInspectios = inspect.filter(inspection => inspection.state === 'A revisión');
                 setInspections(newInspectios);
             }
         })()
@@ -109,7 +109,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                                 <option>Seleccione una opcion</option>
                                 {
                                     inspections.map(inspection => (
-                                        <option>Inspección # {inspection.id_inspection} - {inspection.observation}</option>
+                                        <option>Inspección # {inspection.id_inspection} - {inspection.observation_i}</option>
                                     ))
                                 }
                             </Input>
@@ -118,7 +118,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
 
                     <hr />
                     <FormGroup>
-                        <Input type="textarea" name="observation" placeholder="Observación" rows="3" onChange={handleInputChange} />
+                        <Input type="textarea" name="observation_wo" placeholder="Observación" rows="3" onChange={handleInputChange} />
                     </FormGroup>
                     <hr />
                     <FormGroup>

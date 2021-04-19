@@ -121,3 +121,10 @@ footer.footer {
     }
 
 
+    .tr-work {
+      cursor: pointer;
+    }
+
+    .tr-work:hover {
+      background: #D9D2D2;
+    }

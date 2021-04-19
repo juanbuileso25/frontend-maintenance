@@ -77,3 +77,15 @@ export async function saveWorkOrder(workOrderData) {
     }
 }
 
+export async function getWorkOrder(id) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/work-order/${id}`,
+            method: 'GET'
+        });
+        return (response);
+    } catch (err) {
+        console.log(err);
+    }
+}
+

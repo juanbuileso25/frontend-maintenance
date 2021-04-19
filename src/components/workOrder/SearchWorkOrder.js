@@ -1,43 +1,35 @@
-import { useEffect, useState, Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
-
-import { getInspection, deleteInspection } from '../../services/index';
-import ModalEdit from './ModalEdit';
-
-
-const SearchInspection = () => {
-
-    const [modal, setModal] = useState(false);
-    const [inspections, setInspections] = useState([])
-    const [inspectionSelected, setInspectionSelected] = useState({})
+import ModalViewWorkOrder from './ModalViewWorkOrder';
+import { getWorkOrder } from '../../services/index';
 
 
-    const toggle = () => setModal(!modal);
-    const idUpdate = inspectionSelected.id_inspection;
+const SearchWorkOrder = () => {
+
     const { id } = useParams()
 
 
-    const deleteI = async (inspection) => {
-        let idDelete = inspection.id_inspection;
-        const response = await deleteInspection(idDelete);
-        if (response.data.success == true) {
-            const newState = inspections.filter(inspection => inspection.id_inspection !== idDelete);
-            setInspections(newState);
-        }
-    }
+    const [workOrdes, setWorkOrders] = useState([])
+    const [workOrderSelected, setWorkOrderSelected] = useState({})
+    const [modalViewWO, setModalViewWO] = useState(false)
+
+
+
+    const toggle = () => setModalViewWO(!modalViewWO);
+
 
     useEffect(() => {
         (async () => {
-            const response = await getInspection(id);
-            if (response.status === 200) {
-                setInspections(response.data.value);
+            const responseWO = await getWorkOrder(id);
+            if (responseWO.status === 200) {
+                setWorkOrders(responseWO.data.value);
             }
+
         })()
     }, []);
-
 
 
     return (
@@ -49,7 +41,7 @@ const SearchInspection = () => {
 
                         <div className="d-md-flex align-items-center">
                             <div>
-                                <h4 className="card-title">Inspecciones a máquina</h4>
+                                <h4 className="card-title">Ordenes de Trabajo</h4>
 
                             </div>
                             <div className="ml-auto">
@@ -69,31 +61,35 @@ const SearchInspection = () => {
                         <table className="table v-middle">
                             <thead>
                                 <tr className="bg-light">
-
-                                    <th className="border-top-0">Tipo</th>
                                     <th className="border-top-0">Fecha</th>
-                                    <th className="border-top-0">Hora</th>
+                                    <th className="border-top-0">Zona</th>
+                                    <th className="border-top-0">Mantenimiento</th>
                                     <th className="border-top-0">Observación</th>
-                                    <th className="border-top-0">Requiere O.T</th>
+                                    <th className="border-top-0">Estado</th>
                                     <th className="border-top-0">Encargado</th>
                                     <th className="border-top-0">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
+
                                 {
-                                    inspections.map(inspection => (
-                                        <tr>
-                                            <td>{inspection.type_inspection}</td>
-                                            <td>{inspection.date_i.split('T')[0]}</td>
-                                            <td>{inspection.time_i}</td>
-                                            <td>{inspection.observation_i}</td>
-                                            <td>{inspection.maintenance}</td>
-                                            <td>{inspection.employee}</td>
+                                    workOrdes.map(work_order => (
+
+                                        <tr className="tr-work">
+
+                                            <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.date_wo.split('T')[0]}</td>
+                                            <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.zone}</td>
+                                            <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.type_maintenance}</td>
+                                            <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.observation_wo}</td>
+                                            <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.state}</td>
+                                            <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.employee}</td>
                                             <td className="text-center">
-                                                <a className="btn btn-warning text-center" onClick={() => { setModal(true); setInspectionSelected(inspection); }}><FontAwesomeIcon icon={faEdit} /></a>
-                                                <a className="btn btn-danger ml-2 text-center" onClick={() => { deleteI(inspection); }} ><FontAwesomeIcon icon={faTrashAlt} /></a>
+                                                <a className="btn btn-warning text-center" onClick={() => { alert("Eliminar") }}><FontAwesomeIcon icon={faEdit} /></a>
+                                                <a className="btn btn-danger ml-2 text-center" ><FontAwesomeIcon icon={faTrashAlt} /></a>
                                             </td>
+
                                         </tr>
+
                                     ))
                                 }
 
@@ -103,7 +99,7 @@ const SearchInspection = () => {
                     </div>
                 </div >
             </div >
-            <ModalEdit
+            {/* <ModalEdit
                 modal={modal}
                 toggle={toggle}
                 inspections={inspections}
@@ -111,11 +107,15 @@ const SearchInspection = () => {
                 inspectionSelected={inspectionSelected}
                 setInspectionSelected={setInspectionSelected}
                 idUpdate={idUpdate}
+            /> */}
+
+            <ModalViewWorkOrder
+                modalViewWO={modalViewWO}
+                toggle={toggle}
+                workOrderSelected={workOrderSelected}
             />
         </Fragment>
-
-
     );
 }
 
-export default SearchInspection;
+export default SearchWorkOrder;

@@ -46,7 +46,7 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation" value={dataFormEdit.observation} onChange={handleInputChange} />
+                            <Input type="text" name="observation_i" value={dataFormEdit.observation} onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>

@@ -12,7 +12,7 @@ const ModalRegister = ({ modal, toggle, machine }) => {
         type_inspection: '',
         id_machine: machine.id_machine,
         date_i: '',
-        observation: '',
+        observation_i: '',
         maintenance: 'Si',
         employee: 'Didier',
         state: 'A revisión'
@@ -27,14 +27,14 @@ const ModalRegister = ({ modal, toggle, machine }) => {
 
     const sendDataForm = async (e) => {
         e.preventDefault();
-        if (dataForm.maintenance == 'Si') {
+        if (dataForm.maintenance === 'Si') {
             dataForm.state = 'A revisión'
         } else {
             dataForm.state = 'Terminada'
         }
 
         const response = await saveInspection(dataForm);
-        if (response.data.success == true) {
+        if (response.data.success === true) {
             alertNotification("Echo", "inspección guardada con exito!", "success");
         } else {
             alertNotification("Error", "No se ha guardado la inspección !", "error");
@@ -59,7 +59,7 @@ const ModalRegister = ({ modal, toggle, machine }) => {
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation" required onChange={handleInputChange} />
+                            <Input type="text" name="observation_i" required onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>

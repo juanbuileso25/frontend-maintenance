@@ -7,6 +7,7 @@ import Inspection from './components/inspection/Inspection';
 import Sidebar from "./components/layuot/Sidebar";
 import SearchInspection from "./components/inspection/SearchInspection";
 import WorkOrder from "./components/workOrder/WorkOrder";
+import SearchWorkOrder from "./components/workOrder/SearchWorkOrder";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <ReactNotification />
           <Switch>
             <Route exact path="/search-inspection/:id" component={SearchInspection} />
+            <Route exact path="/search-work-order/:id" component={SearchWorkOrder} />
             <Route exact path="/work-order" component={WorkOrder} />
             <Route exact path="/inspection" component={Inspection} />
             <Route exact path="/" component={Home} />
