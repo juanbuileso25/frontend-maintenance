@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 import ModalViewWorkOrder from './ModalViewWorkOrder';
-import { getWorkOrder } from '../../services/index';
+import { getWorkOrder, deleteWorkOrder } from '../../services/index';
 
 
 const SearchWorkOrder = () => {
@@ -19,6 +19,16 @@ const SearchWorkOrder = () => {
 
 
     const toggle = () => setModalViewWO(!modalViewWO);
+
+    const deleteWO = async (work_order) => {
+        let idDelete = work_order.id_work_order;
+        const response = await deleteWorkOrder(idDelete);
+        if (response.data.success == true) {
+            const newState = workOrdes.filter(work_order => work_order.id_work_order !== idDelete);
+            setWorkOrders(newState);
+        }
+    }
+
 
 
     useEffect(() => {
@@ -85,7 +95,7 @@ const SearchWorkOrder = () => {
                                             <td onClick={() => { setModalViewWO(true); setWorkOrderSelected(work_order) }}>{work_order.employee}</td>
                                             <td className="text-center">
                                                 <a className="btn btn-warning text-center" onClick={() => { alert("Eliminar") }}><FontAwesomeIcon icon={faEdit} /></a>
-                                                <a className="btn btn-danger ml-2 text-center" ><FontAwesomeIcon icon={faTrashAlt} /></a>
+                                                <a className="btn btn-danger ml-2 text-center" onClick={() => { deleteWO(work_order); }}><FontAwesomeIcon icon={faTrashAlt} /></a>
                                             </td>
 
                                         </tr>

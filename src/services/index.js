@@ -64,6 +64,18 @@ export async function deleteInspection(id) {
     }
 }
 
+export async function deleteWorkOrder(id) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/work-order/${id}`,
+            method: 'DELETE'
+        });
+        return response;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export async function saveWorkOrder(workOrderData) {
     try {
         const response = await axios({

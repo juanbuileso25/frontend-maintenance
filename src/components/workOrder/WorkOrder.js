@@ -26,6 +26,7 @@ const WorkOrder = () => {
 
             <div className="row">
 
+                <h2 className="text-center">ORDENES DE TRABAJO</h2>
                 {
                     machines.map(machine => (
                         <Machines

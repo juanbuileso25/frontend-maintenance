@@ -27,6 +27,8 @@ const Inspection = () => {
         <Fragment>
             <div className="row">
 
+                <h2 className="text-center">INSPECCIONES</h2>
+
                 {
                     machines.map(machine => (
                         <Machines
