@@ -57,7 +57,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
     }
 
     return (
-        <Modal isOpen={modalWO} size="lg">
+        <Modal isOpen={modalWO} size="lg" scrollable>
             <ModalHeader>
                 <FormGroup className="headerNorma">
                     <img sm={6} src="imgs/logo.JPG" />

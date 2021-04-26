@@ -2,9 +2,11 @@ import { useEffect, useState, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Modal, ModalBody, ModalHeader, ModalFooter, Button, Label } from 'reactstrap'
 
 
 import { getInspection, deleteInspection } from '../../services/index';
+import { alertNotification } from '../../services/alerts/alert'
 import ModalEdit from './ModalEdit';
 
 
@@ -13,20 +15,26 @@ const SearchInspection = () => {
     const [modal, setModal] = useState(false);
     const [inspections, setInspections] = useState([])
     const [inspectionSelected, setInspectionSelected] = useState({})
+    const [modalConfirm, setModalConfirm] = useState(false)
+    const [idDelete, setIdDelete] = useState(0)
 
 
     const toggle = () => setModal(!modal);
+    const toggleConfirm = () => setModalConfirm(!modalConfirm);
     const idUpdate = inspectionSelected.id_inspection;
     const { id } = useParams()
 
 
-    const deleteI = async (inspection) => {
-        let idDelete = inspection.id_inspection;
+    const deleteI = async () => {
         const response = await deleteInspection(idDelete);
         if (response.data.success == true) {
             const newState = inspections.filter(inspection => inspection.id_inspection !== idDelete);
             setInspections(newState);
+            alertNotification("Echo", "El registro se ha eliminado con exito!", "success")
+        } else {
+            alertNotification("Error", "El registro no se ha eliminado con exito!", "error")
         }
+        toggleConfirm()
     }
 
     useEffect(() => {
@@ -91,7 +99,7 @@ const SearchInspection = () => {
                                             <td>{inspection.employee}</td>
                                             <td className="text-center">
                                                 <a className="btn btn-warning text-center" onClick={() => { setModal(true); setInspectionSelected(inspection); }}><FontAwesomeIcon icon={faEdit} /></a>
-                                                <a className="btn btn-danger ml-2 text-center" onClick={() => { deleteI(inspection); }} ><FontAwesomeIcon icon={faTrashAlt} /></a>
+                                                <a className="btn btn-danger ml-2 text-center" onClick={() => { setModalConfirm(true); setIdDelete(inspection.id_inspection) }} ><FontAwesomeIcon icon={faTrashAlt} /></a>
                                             </td>
                                         </tr>
                                     ))
@@ -112,6 +120,19 @@ const SearchInspection = () => {
                 setInspectionSelected={setInspectionSelected}
                 idUpdate={idUpdate}
             />
+
+            <Modal isOpen={modalConfirm}>
+                <ModalHeader>
+                    <Label>Eliminar registro</Label>
+                </ModalHeader>
+                <ModalBody>
+                    <Label>¿Desea eliminar este registro?</Label>
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={deleteI}>Eliminar</Button>
+                    <Button color="danger" onClick={toggleConfirm}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
         </Fragment>
 
 

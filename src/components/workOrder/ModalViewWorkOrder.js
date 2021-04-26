@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react'
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 
 
-const ModalViewWorkOrder = ({ modalViewWO, toggle, workOrderSelected }) => {
-
+const ModalViewWorkOrder = ({ modalViewWO, toggleView, workOrderSelected }) => {
 
 
     return (
-        <Modal isOpen={modalViewWO} size="lg">
+        <Modal isOpen={modalViewWO} size="lg" scrollable>
             <ModalHeader>
                 <FormGroup className="headerNorma">
                     <img sm={6} src="/imgs/logo.JPG" />
@@ -77,10 +75,43 @@ const ModalViewWorkOrder = ({ modalViewWO, toggle, workOrderSelected }) => {
                             </FormGroup>
                         </Col>
                     </Row>
+                    <Row form>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="activity">Estado</Label>
+                                <Input type="text" name="activity" value={workOrderSelected.state} />
+                            </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                            <FormGroup>
+                                <Label for="estimated_time">Tiempo Real(h)</Label>
+                                <Input type="number" name="estimated_time" value={workOrderSelected.real_time} />
+                            </FormGroup>
+                        </Col>
+                    </Row>
+                    <hr></hr>
+                    <FormGroup row>
+                        <Label for="date_WO" sm={2}>Fecha Terminado</Label>
+                        <Col sm={4}>
+                            <Input type="text" name="date_wo" value={workOrderSelected.date_complete} />
+                        </Col>
+                        <Label for="zone" sm={2}>Fecha Revisado</Label>
+                        <Col sm={4}>
+                            <Input type="text" name="zone" value={workOrderSelected.date_revision} />
+                        </Col>
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label for="date_WO" sm={2}>Fecha Aprobado</Label>
+                        <Col sm={4}>
+                            <Input type="text" name="date_wo" value={workOrderSelected.date_aprobbal} />
+                        </Col>
+                        <Label for="zone" sm={2}>Firma</Label>
+
+                    </FormGroup>
                 </Form>
             </ModalBody>
             <ModalFooter>
-                <Button color="danger" onClick={toggle}>Cerrar</Button>
+                <Button color="danger" onClick={toggleView}>Cerrar</Button>
             </ModalFooter>
         </Modal>
     );

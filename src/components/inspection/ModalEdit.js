@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
+
 import { updateInspection } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
 
@@ -10,6 +11,7 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
     useEffect(() => {
         (() => {
             setDataFormEdit(inspectionSelected);
+            console.log(dataFormEdit)
         })()
     }, [modal])
 
@@ -46,7 +48,7 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
                         </FormGroup>
                         <FormGroup>
                             <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation_i" value={dataFormEdit.observation} onChange={handleInputChange} />
+                            <Input type="text" name="observation_i" value={dataFormEdit.observation_i} onChange={handleInputChange} />
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>
