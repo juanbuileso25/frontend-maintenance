@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
+import InputForm from '../formComponents/Input';
 import { getInspection } from '../../services/index';
 import { saveWorkOrder } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
 
 
 const ModalRegister = ({ modalWO, toggle, machine }) => {
+
+    const [observation, setObservation] = useState({ input: '', valid: null })
+    const [activity, setActivity] = useState({ input: '', valid: null })
+    const [estimatedTime, setEstimatedTime] = useState({ input: '', valid: null })
 
     const [inspections, setInspections] = useState([]);
 
@@ -22,7 +29,11 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         estimated_time: ''
     });
 
-
+    const regularExpression = {
+        observation: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
+        activity: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
+        estimated_time: /^[0-9\.]{1,3}$/
+    };
 
     useEffect(() => {
         (async () => {
@@ -39,6 +50,18 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         setDataForm({
             ...dataForm,
             [e.target.name]: e.target.value
+        })
+        setObservation({
+            ...observation,
+            input: e.target.value
+        })
+        setActivity({
+            ...activity,
+            input: e.target.value
+        })
+        setEstimatedTime({
+            ...estimatedTime,
+            input: e.target.value
         })
     }
 
@@ -118,7 +141,15 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
 
                     <hr />
                     <FormGroup>
-                        <Input type="textarea" name="observation_wo" placeholder="Observación" rows="3" onChange={handleInputChange} />
+                        <InputForm
+                            state={observation}
+                            setState={setObservation}
+                            type="textarea"
+                            name="observation_wo"
+                            label="Observación"
+                            handleInputChange={handleInputChange}
+                            regularExpression={regularExpression.observation}
+                        />
                     </FormGroup>
                     <hr />
                     <FormGroup>
@@ -127,16 +158,28 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                     <hr />
                     <Row form>
                         <Col md={6}>
-                            <FormGroup>
-                                <Label for="activity">Actividad a realizar</Label>
-                                <Input type="text" name="activity" onChange={handleInputChange} />
-                            </FormGroup>
+                            <InputForm
+                                state={activity}
+                                setState={setActivity}
+                                type="text"
+                                name="activity"
+                                label="Actividad a realizar"
+                                handleInputChange={handleInputChange}
+                                regularExpression={regularExpression.activity}
+                            />
                         </Col>
                         <Col md={6}>
-                            <FormGroup>
-                                <Label for="estimated_time">Tiempo estimado(h)</Label>
-                                <Input type="number" name="estimated_time" onChange={handleInputChange} />
-                            </FormGroup>
+                            <InputForm
+                                state={estimatedTime}
+                                setState={setEstimatedTime}
+                                type="number"
+                                name="estimated_time"
+                                label="Tiempo estimado(h)"
+                                handleInputChange={handleInputChange}
+                                regularExpression={regularExpression.estimated_time}
+                            />
+
+
                         </Col>
                     </Row>
                 </Form>

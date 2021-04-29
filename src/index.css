@@ -128,3 +128,13 @@ footer.footer {
     .tr-work:hover {
       background: #D9D2D2;
     }
+
+    .invalid {
+      color: black;
+      background: red;
+      padding: 6px;
+      border-radius: 5px;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+    }
