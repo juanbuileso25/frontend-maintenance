@@ -14,6 +14,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
     const [observation, setObservation] = useState({ input: '', valid: null })
     const [activity, setActivity] = useState({ input: '', valid: null })
     const [estimatedTime, setEstimatedTime] = useState({ input: '', valid: null })
+    const [formValid, setFormValid] = useState(true)
 
     const [inspections, setInspections] = useState([]);
 
@@ -63,20 +64,27 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
             ...estimatedTime,
             input: e.target.value
         })
+        setFormValid(true)
     }
 
     const sendDataForm = async (e) => {
-        dataForm.id_inspection = parseInt(dataForm.id_inspection.split(' ')[2])
+
         e.preventDefault();
 
-
-        const response = await saveWorkOrder(dataForm);
-        if (response.data.success == true) {
-            alertNotification("Echo", "Orden de trabajo guardada con exito!", "success");
+        if (observation.valid === true && activity.valid === true && estimatedTime.valid === true) {
+            dataForm.id_inspection = parseInt(dataForm.id_inspection.split(' ')[2])
+            const response = await saveWorkOrder(dataForm);
+            if (response.data.success == true) {
+                alertNotification("Echo", "Orden de trabajo guardada con exito!", "success");
+            } else {
+                alertNotification("Error", "No se ha guardado la orden de trabajo !", "error");
+            }
+            setFormValid(true)
+            toggle();
         } else {
-            alertNotification("Error", "No se ha guardado la orden de trabajo !", "error");
+            setFormValid(false)
         }
-        toggle();
+
     }
 
     return (
@@ -183,10 +191,19 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                         </Col>
                     </Row>
                 </Form>
+                {
+                    formValid === false &&
+                    <div>
+                        <Label className="invalid">Complete los campos correctamente
+                                    <FontAwesomeIcon icon={faTimesCircle} className="ml-3 fa-fw" />
+                        </Label>
+                    </div>
+                }
             </ModalBody>
+
             <ModalFooter>
                 <Button color="primary" onClick={sendDataForm}>Guardar</Button>
-                <Button color="danger" onClick={toggle}>Cancel</Button>
+                <Button color="danger" onClick={() => { toggle(); setFormValid(true); setObservation({ input: '', valid: null }); setActivity({ input: '', valid: null }); setEstimatedTime({ input: '', valid: null }) }}>Cancel</Button>
             </ModalFooter>
         </Modal>
     );

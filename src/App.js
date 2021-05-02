@@ -13,6 +13,7 @@ import SearchWorkOrder from "./components/workOrder/SearchWorkOrder";
 function App() {
   return (
     <Fragment>
+
       <Router>
         <Sidebar />
         <div className="page-content p-2 content">
@@ -27,6 +28,8 @@ function App() {
         </div>
 
       </Router>
+
+
 
     </Fragment>
 

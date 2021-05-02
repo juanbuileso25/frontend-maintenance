@@ -17,6 +17,10 @@ const InputForm = ({ name, handleInputChange, label, type, state, setState, regu
         }
     }
 
+    const focus = () => {
+        setState({ input: '', valid: null })
+    }
+
 
     return (
         <FormGroup>
@@ -26,6 +30,7 @@ const InputForm = ({ name, handleInputChange, label, type, state, setState, regu
                 type={type}
                 name={name}
                 onChange={onChange, handleInputChange}
+                onFocus={focus}
                 onKeyUp={validation}
                 onBlur={validation}
             />
