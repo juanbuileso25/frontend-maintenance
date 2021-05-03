@@ -1,7 +1,7 @@
 import { FormGroup, Label, Input } from 'reactstrap';
 
 
-const InputForm = ({ name, handleInputChange, label, type, state, setState, regularExpression }) => {
+const InputForm = ({ name, handleInputChange, label, type, state, setState, regularExpression, value }) => {
 
     const onChange = (e) => {
         setState({ ...state, input: e.target.value })
@@ -18,9 +18,9 @@ const InputForm = ({ name, handleInputChange, label, type, state, setState, regu
     }
 
     const focus = () => {
-        setState({ input: '', valid: null })
+        if (state.input.length === 0)
+            setState({ input: '', valid: null })
     }
-
 
     return (
         <FormGroup>
@@ -33,6 +33,7 @@ const InputForm = ({ name, handleInputChange, label, type, state, setState, regu
                 onFocus={focus}
                 onKeyUp={validation}
                 onBlur={validation}
+                value={value && value}
             />
         </FormGroup>
     );

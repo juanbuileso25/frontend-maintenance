@@ -80,6 +80,9 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                 alertNotification("Error", "No se ha guardado la orden de trabajo !", "error");
             }
             setFormValid(true)
+            setObservation({ input: '', valid: null })
+            setActivity({ input: '', valid: null })
+            setEstimatedTime({ input: '', valid: null })
             toggle();
         } else {
             setFormValid(false)

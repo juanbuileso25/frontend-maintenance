@@ -138,3 +138,8 @@ footer.footer {
       text-align: center;
       font-weight: bold;
     }
+
+    .machines {
+      width: 100%;
+      align-items: center;
+    }

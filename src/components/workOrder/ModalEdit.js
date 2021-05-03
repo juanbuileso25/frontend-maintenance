@@ -3,32 +3,58 @@ import { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
 import { updateWorkOrder } from '../../services';
 import { alertNotification } from '../../services/alerts/alert'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
+import InputForm from '../formComponents/Input';
 
 const ModalEdit = ({ modalEdit, workOrderSelected, toggleEdit, idUpdate, workOrdes, setWorkOrders }) => {
+
+    const [observation, setObservation] = useState({})
+    const [activity, setActivity] = useState({})
+    const [estimatedTime, setEstimatedTime] = useState({})
+    const [state, setState] = useState()
+    const [formValid, setFormValid] = useState(true)
 
     const [dataFormEdit, setDataFormEdit] = useState({})
 
     useEffect(() => {
         (() => {
+            setObservation({ input: workOrderSelected.observation_wo, valid: true })
+            setActivity({ input: workOrderSelected.activity, valid: true })
+            setEstimatedTime({ input: workOrderSelected.estimated_time, valid: true })
+            setState({ input: workOrderSelected.state, valid: true })
             setDataFormEdit(workOrderSelected);
         })()
     }, [modalEdit])
 
+    const regularExpression = {
+        observation: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
+        activity: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
+        estimated_time: /^[0-9\.]{1,3}$/,
+        state: /^[a-zA-ZÀ-ÿ\s]{1,40}$/
+    };
+
 
     const sendDataFormUpdate = async () => {
-        console.log(dataFormEdit)
-        dataFormEdit.date_wo = dataFormEdit.date_wo.split('T')[0]
+        if (observation.valid === true && activity.valid === true && estimatedTime.valid === true && state.valid === true) {
+            dataFormEdit.date_wo = dataFormEdit.date_wo.split('T')[0]
 
-        const response = await updateWorkOrder(idUpdate, dataFormEdit);
-        if (response.data.success == true) {
-            const newData = workOrdes.map(work_order => work_order.id_work_order == dataFormEdit.id_work_order ? dataFormEdit : work_order);
-            setWorkOrders(newData);
-            alertNotification("Echo", "Orden de Trabajo modificada con exito !", "success");
+            const response = await updateWorkOrder(idUpdate, dataFormEdit);
+            if (response.data.success == true) {
+                const newData = workOrdes.map(work_order => work_order.id_work_order == dataFormEdit.id_work_order ? dataFormEdit : work_order);
+                setWorkOrders(newData);
+                alertNotification("Echo", "Orden de Trabajo modificada con exito !", "success");
+            } else {
+                alertNotification("Error", "No se ha modificado la order de trabajo!", "error");
+            }
+            setFormValid(true)
+            toggleEdit();
         } else {
-            alertNotification("Error", "No se ha modificado la order de trabajo!", "error");
+            setFormValid(false)
         }
-        toggleEdit();
+
+
     }
 
 
@@ -37,6 +63,23 @@ const ModalEdit = ({ modalEdit, workOrderSelected, toggleEdit, idUpdate, workOrd
             ...dataFormEdit,
             [e.target.name]: e.target.value
         })
+        setObservation({
+            ...observation,
+            input: e.target.value
+        })
+        setActivity({
+            ...activity,
+            input: e.target.value
+        })
+        setEstimatedTime({
+            ...estimatedTime,
+            input: e.target.value
+        })
+        setState({
+            ...state,
+            input: e.target.value
+        })
+        setFormValid(true)
     }
 
 
@@ -102,10 +145,17 @@ const ModalEdit = ({ modalEdit, workOrderSelected, toggleEdit, idUpdate, workOrd
                     </FormGroup> */}
 
                     <hr />
-                    <FormGroup>
-                        <Label for="">Observación</Label>
-                        <Input type="textarea" name="observation_wo" value={dataFormEdit.observation_wo} rows="2" onChange={handleInputChange} />
-                    </FormGroup>
+
+                    <InputForm
+                        label="Observación"
+                        type="textarea"
+                        handleInputChange={handleInputChange}
+                        name="observation_wo"
+                        state={observation}
+                        setState={setObservation}
+                        value={dataFormEdit.observation_wo}
+                        regularExpression={regularExpression.observation}
+                    />
                     <hr />
                     <FormGroup>
                         <Label for="date" className="text-center" size="sm" sm={12}>MANO DE OBRA</Label>
@@ -113,24 +163,45 @@ const ModalEdit = ({ modalEdit, workOrderSelected, toggleEdit, idUpdate, workOrd
                     <hr />
                     <Row form>
                         <Col md={6}>
-                            <FormGroup>
-                                <Label for="activity">Actividad a realizar</Label>
-                                <Input type="text" name="activity" value={dataFormEdit.activity} onChange={handleInputChange} />
-                            </FormGroup>
+
+                            <InputForm
+                                label="Actividad a realizar"
+                                type="text"
+                                handleInputChange={handleInputChange}
+                                name="activity"
+                                state={activity}
+                                setState={setActivity}
+                                value={dataFormEdit.activity}
+                                regularExpression={regularExpression.activity}
+                            />
                         </Col>
                         <Col md={6}>
-                            <FormGroup>
-                                <Label for="estimated_time">Tiempo estimado(h)</Label>
-                                <Input type="number" name="estimated_time" value={dataFormEdit.estimated_time} onChange={handleInputChange} />
-                            </FormGroup>
+
+                            <InputForm
+                                label="Tiempo estimado(h)"
+                                type="number"
+                                handleInputChange={handleInputChange}
+                                name="estimated_time"
+                                state={estimatedTime}
+                                setState={setEstimatedTime}
+                                value={dataFormEdit.estimated_time}
+                                regularExpression={regularExpression.estimated_time}
+                            />
                         </Col>
                     </Row>
                     <Row form>
                         <Col md={6}>
-                            <FormGroup>
-                                <Label for="activity">Estado</Label>
-                                <Input type="text" name="state" value={dataFormEdit.state} onChange={handleInputChange} />
-                            </FormGroup>
+
+                            <InputForm
+                                label="Estado"
+                                type="text"
+                                handleInputChange={handleInputChange}
+                                name="state"
+                                state={state}
+                                setState={setState}
+                                value={dataFormEdit.state}
+                                regularExpression={regularExpression.state}
+                            />
                         </Col>
                         <Col md={6}>
                             <FormGroup>
@@ -159,10 +230,18 @@ const ModalEdit = ({ modalEdit, workOrderSelected, toggleEdit, idUpdate, workOrd
 
                     </FormGroup>
                 </Form>
+                {
+                    formValid === false &&
+                    <div>
+                        <Label className="invalid">Complete los campos correctamente
+                            <FontAwesomeIcon icon={faTimesCircle} className="ml-3 fa-fw" />
+                        </Label>
+                    </div>
+                }
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={sendDataFormUpdate}>Guardar</Button>
-                <Button color="danger" onClick={toggleEdit}>Cerrar</Button>
+                <Button color="danger" onClick={() => { toggleEdit() }}>Cerrar</Button>
             </ModalFooter>
         </Modal>
     );

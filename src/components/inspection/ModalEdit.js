@@ -3,30 +3,52 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, La
 
 import { updateInspection } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
+import InputForm from '../formComponents/Input';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspections, idUpdate }) => {
 
     const [dataFormEdit, setDataFormEdit] = useState({})
 
+    const [typeInspection, setTypeInspection] = useState({})
+    const [observation, setObservation] = useState({})
+    const [formValid, setFormValid] = useState(true)
+
+    console.log(typeInspection)
+
     useEffect(() => {
         (() => {
             setDataFormEdit(inspectionSelected);
-            console.log(dataFormEdit)
+            setTypeInspection({ input: inspectionSelected.type_inspection, valid: true })
+            setObservation({ input: inspectionSelected.observation_i, valid: true })
         })()
     }, [modal])
 
-    const sendDataFormUpdate = async () => {
-        inspectionSelected.date_i = inspectionSelected.date_i.split('T')[0]
+    const regularExpression = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
 
-        const response = await updateInspection(idUpdate, dataFormEdit);
-        if (response.data.success == true) {
-            const newData = inspections.map(inspection => inspection.id_inspection == dataFormEdit.id_inspection ? dataFormEdit : inspection);
-            setInspections(newData);
-            alertNotification("Echo", "Inspeccion modificada con exito !", "success");
+    const sendDataFormUpdate = async () => {
+
+        if (typeInspection.valid === true && observation.valid === true) {
+            inspectionSelected.date_i = inspectionSelected.date_i.split('T')[0]
+
+            const response = await updateInspection(idUpdate, dataFormEdit);
+            if (response.data.success == true) {
+                const newData = inspections.map(inspection => inspection.id_inspection == dataFormEdit.id_inspection ? dataFormEdit : inspection);
+                setInspections(newData);
+                alertNotification("Echo", "Inspeccion modificada con exito !", "success");
+            } else {
+                alertNotification("Error", "No se ha modificado la inspección!", "error");
+            }
+            setFormValid(true)
+            setTypeInspection({ input: '', valid: null })
+            setObservation({ input: '', valid: null })
+            toggle();
         } else {
-            alertNotification("Error", "No se ha modificado la inspección!", "error");
+            setFormValid(false)
         }
-        toggle();
+
     }
 
     const handleInputChange = (e) => {
@@ -34,6 +56,9 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
             ...dataFormEdit,
             [e.target.name]: e.target.value
         })
+        setTypeInspection({ ...typeInspection, input: e.target.value })
+        setObservation({ ...observation, input: e.target.value })
+        setFormValid(true)
     }
 
     return (
@@ -42,14 +67,29 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
                 <ModalHeader>EDITAR INSPECCION </ModalHeader>
                 <ModalBody>
                     <Form>
-                        <FormGroup>
-                            <Label for="exampleEmail">Tipo Inspección</Label>
-                            <Input type="text" value={dataFormEdit.type_inspection} onChange={handleInputChange} name="type_inspection" />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label for="examplePassword">Observación</Label>
-                            <Input type="text" name="observation_i" value={dataFormEdit.observation_i} onChange={handleInputChange} />
-                        </FormGroup>
+
+                        <InputForm
+                            label="Tipo Inspección"
+                            type="text"
+                            handleInputChange={handleInputChange}
+                            name="type_inspection"
+                            state={typeInspection}
+                            setState={setTypeInspection}
+                            value={dataFormEdit.type_inspection}
+                            regularExpression={regularExpression}
+                        />
+
+                        <InputForm
+                            label="Observación"
+                            type="text"
+                            handleInputChange={handleInputChange}
+                            name="observation_i"
+                            state={observation}
+                            setState={setObservation}
+                            value={dataFormEdit.observation_i}
+                            regularExpression={regularExpression}
+                        />
+
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>
                             <Input type="select" name="maintenance" value={dataFormEdit.maintenance} onChange={handleInputChange}>
@@ -66,10 +106,18 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
                             </Input>
                         </FormGroup>
                     </Form>
+                    {
+                        formValid === false &&
+                        <div>
+                            <Label className="invalid">Complete los campos correctamente
+                                    <FontAwesomeIcon icon={faTimesCircle} className="ml-3 fa-fw" />
+                            </Label>
+                        </div>
+                    }
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onClick={sendDataFormUpdate}>Guardar</Button>
-                    <Button color="danger" onClick={toggle} >Cancel</Button>
+                    <Button color="danger" onClick={() => { toggle(); setFormValid(true); setTypeInspection({ input: '', valid: null }); setObservation({ input: '', valid: null }) }} >Cancel</Button>
                 </ModalFooter>
             </Modal>
         </div>
