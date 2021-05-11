@@ -1,8 +1,15 @@
+import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTools, faCarBattery, faFileSignature, faWrench, faUsersCog } from '@fortawesome/free-solid-svg-icons'
+import { faTools, faCarBattery, faFileSignature, faWrench, faUsersCog, faAngleRight, faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { Link } from "react-router-dom";
+import { UncontrolledCollapse } from "reactstrap";
 
 const Sidebar = () => {
+
+    const [angleMant, setAngleMant] = useState(false);
+
+    const toggleMant = () => setAngleMant(!angleMant)
+
     return (
 
 
@@ -31,6 +38,32 @@ const Sidebar = () => {
                         Ordenes de trabajo
                     </Link>
                 </li>
+
+                <li className="nav-item">
+                    <a className="nav-link text-gray active" id="toggler" onClick={toggleMant}>
+                        <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
+                        Mantenimientos
+                        <FontAwesomeIcon icon={angleMant === false ? faAngleRight : faAngleDown} className="iconMantenimientos mt-1" />
+                    </a>
+
+                </li>
+
+                <UncontrolledCollapse toggler="#toggler">
+                    <li className="ml-4 nav-item">
+                        <a className="nav-link text-gray active">
+                            <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
+                        Preventivos
+                    </a>
+                    </li>
+
+                    <li className="ml-4 nav-item">
+                        <a className="nav-link text-gray active">
+                            <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
+                        Correctivos
+                    </a>
+                    </li>
+                </UncontrolledCollapse>
+
 
                 <li className="nav-item">
                     <a className="nav-link text-gray active">

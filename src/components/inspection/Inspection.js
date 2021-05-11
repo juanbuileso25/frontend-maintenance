@@ -32,7 +32,7 @@ const Inspection = () => {
 
         <Fragment>
 
-            <h2 className="text-center">INSPECCIONES A MAQUINAS</h2>
+            <h2 className="text-center titulo">INSPECCIONES A MAQUINAS</h2>
 
             <hr></hr>
 

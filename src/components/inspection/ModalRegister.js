@@ -1,73 +1,72 @@
-import { useState, useEffect } from 'react';
+
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
-import { saveInspection } from '../../services/index';
-import { alertNotification } from '../../services/alerts/alert';
-import InputForm from '../formComponents/Input';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+
+import { useFormRegister } from '../../hooks/inspections/useFormRegister';
 
 const ModalRegister = ({ modal, toggle, machine }) => {
 
-    // States for input validation
-    const [typeInspection, setTypeInspection] = useState({ input: '', valid: null })
-    const [observation, setObservation] = useState({ input: '', valid: null })
 
-    const [modalValid, setModalValid] = useState(false)
-    const [formValid, setFormValid] = useState(true)
-
-
-    const toggleValid = () => setModalValid(!modalValid)
-
-
-    const [dataForm, setDataForm] = useState({
-        type_inspection: '',
-        id_machine: machine.id_machine,
-        date_i: new Date().toLocaleString().split(' ')[0].replace(new RegExp('/', "g"), '-'),
-        observation_i: '',
-        maintenance: 'Si',
-        employee: 'Didier',
-        state: 'A revisión'
-    });
-
-    const regularExpression = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
-
-    const handleInputChange = (e) => {
-        setDataForm({
-            ...dataForm,
-            [e.target.name]: e.target.value
-        })
-        setTypeInspection({ ...typeInspection, input: e.target.value })
-        setObservation({ ...observation, input: e.target.value })
-        setFormValid(true)
+    const dataForm = {
+        type_inspection: {
+            val: '',
+            msg: '',
+            error: false
+        },
+        id_machine: {
+            val: machine.id_machine,
+            msg: '',
+            error: false
+        },
+        date_i: {
+            val: new Date().toLocaleString().split(' ')[0].replace(new RegExp('/', "g"), '-'),
+            msg: '',
+            error: false
+        },
+        observation_i: {
+            val: '',
+            msg: '',
+            error: false
+        },
+        maintenance: {
+            val: 'Si',
+            msg: '',
+            error: false
+        },
+        employee: {
+            val: 'Didier',
+            msg: '',
+            error: false
+        },
+        state: {
+            val: 'A revisión',
+            msg: '',
+            error: false
+        }
     }
 
-    const sendDataForm = async (e) => {
-        e.preventDefault();
-        if (dataForm.maintenance === 'Si') {
-            dataForm.state = 'A revisión'
-        } else {
-            dataForm.state = 'Terminada'
+    const regularExpression = /[a-zA-Z]$/;
+
+    const validationForm = (form, setForm) => {
+        let errors = false;
+        const copyForm = { ...form };
+        if (form.type_inspection.val === '') {
+            copyForm.type_inspection.msg = "El campo tipo inspecciòn es requerido";
+            copyForm.type_inspection.error = true;
+            errors = true;
         }
 
-        if (typeInspection.valid === true && observation.valid === true) {
-            const response = await saveInspection(dataForm);
-            if (response.data.success === true) {
-                alertNotification("Echo", "inspección guardada con exito!", "success");
-            } else {
-                alertNotification("Error", "No se ha guardado la inspección !", "error");
-            }
-            setFormValid(true)
-            setTypeInspection({ input: '', valid: null })
-            setObservation({ input: '', valid: null })
-            toggle();
-        } else {
-            setFormValid(false)
+        if (form.observation_i.val === '') {
+            copyForm.observation_i.msg = "El campo observación es requerido";
+            copyForm.observation_i.error = true;
+            errors = true;
         }
-
+        setForm(copyForm);
+        return errors;
     }
 
+    const { form, handleChange, handleSubmit } = useFormRegister(dataForm, validationForm, toggle)
 
     return (
         <>
@@ -76,80 +75,71 @@ const ModalRegister = ({ modal, toggle, machine }) => {
                     <ModalHeader>REGISTRO DE INSPECCION {machine.name}</ModalHeader>
                     <ModalBody>
                         <Form>
-                            <InputForm
-                                state={typeInspection}
-                                setState={setTypeInspection}
-                                name="type_inspection"
-                                label="Tipo Inspección"
-                                handleInputChange={handleInputChange}
-                                type="text"
-                                regularExpression={regularExpression}
-                            />
+                            <FormGroup>
+                                <Label for="type_inspection">Tipo Inspección</Label>
+                                <Input
+                                    className={form.type_inspection.error && "is-invalid"}
+                                    type="text"
+                                    name="type_inspection"
+                                    onChange={handleChange}
+
+                                    value={form.type_inspection.val}
+                                    required
+                                />
+                                {form.type_inspection.error && <p className="mt-2 invalid-input">{form.type_inspection.msg}</p>}
+                            </FormGroup>
+
+
 
                             <FormGroup>
                                 <Label for="date">Fecha</Label>
                                 <Input
                                     type="date"
                                     name="date_i"
-                                    onChange={handleInputChange}
+                                    onChange={handleChange}
                                 />
                             </FormGroup>
 
-                            <InputForm
-                                state={observation}
-                                setState={setObservation}
-                                name="observation_i"
-                                label="Observación"
-                                handleInputChange={handleInputChange}
-                                type="text"
-                                regularExpression={regularExpression}
-                            />
+                            <FormGroup>
+                                <Label for="observation_i">Observación</Label>
+                                <Input
+                                    className={form.observation_i.error && "is-invalid"}
+                                    type="text"
+                                    name="observation_i"
+                                    onChange={handleChange}
+
+                                    value={form.observation_i.val}
+                                    required
+                                />
+                                {form.observation_i.error && <p className="mt-2 invalid-input">{form.observation_i.msg}</p>}
+                            </FormGroup>
+
 
                             <FormGroup>
                                 <Label for="exampleSelect">Requiere Mantenimiento</Label>
-                                <Input type="select" name="maintenance" required onChange={handleInputChange} >
+                                <Input type="select" name="maintenance" required onChange={handleChange} >
                                     <option>Si</option>
                                     <option>No</option>
                                 </Input>
                             </FormGroup>
                             <FormGroup>
                                 <Label for="exampleSelect">Encargado</Label>
-                                <Input type="select" name="employee" required onChange={handleInputChange} >
+                                <Input type="select" name="employee" required onChange={handleChange} >
                                     <option>Didier</option>
                                     <option>Anderson</option>
                                     <option>Jose</option>
                                 </Input>
                             </FormGroup>
-                            {/* <FormGroup>
-                            <Label for="exampleSelect">Estado</Label>
-                            <Input name="state" type="text" value={dataForm.maintenance == "Si" ? "En revisión" : "Verificada"} onChange={handleInputChange} />
-                        </FormGroup> */}
+
                         </Form>
-                        {
-                            formValid === false &&
-                            <div>
-                                <Label className="invalid">Complete los campos correctamente
-                                    <FontAwesomeIcon icon={faTimesCircle} className="ml-3 fa-fw" />
-                                </Label>
-                            </div>
-                        }
 
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" onClick={sendDataForm}>Guardar</Button>
-                        <Button color="danger" onClick={() => { toggle(); setFormValid(true); setTypeInspection({ input: '', valid: null }); setObservation({ input: '', valid: null }) }}>Cancel</Button>
+                        <Button color="primary" onClick={handleSubmit}>Guardar</Button>
+                        <Button color="danger" onClick={() => { toggle(); }}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
             </div>
-
-            <Modal isOpen={modalValid} centered>
-                <ModalBody>
-                    Complete los campos correctamente
-            </ModalBody>
-                <ModalFooter>
-                    <Button color="primary" onClick={toggleValid}>Close</Button>
-                </ModalFooter>
-            </Modal>
 
         </>
     );

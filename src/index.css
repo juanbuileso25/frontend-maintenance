@@ -40,6 +40,8 @@ body {
   transition: all 0.4s;
 }
 
+
+
 .submenu-boxr:hove {
   text-decoration: none;
 }
@@ -73,7 +75,8 @@ body {
     text-transform: capitalize;
 }
 .nav-link:hover{
-    background:#f3f2f2;
+    background:#5F84A1;
+    color: white;
 }
 .text-primary{
     color:#7579e7 !important;
@@ -129,7 +132,7 @@ footer.footer {
       background: #D9D2D2;
     }
 
-    .invalid {
+    .invalid-t {
       color: black;
       background: red;
       padding: 6px;
@@ -139,7 +142,16 @@ footer.footer {
       font-weight: bold;
     }
 
+    .invalid-input {
+      color: red;
+      font-weight: bold;
+    }
+
     .machines {
       width: 100%;
       align-items: center;
     }
+
+.iconMantenimientos {
+  float: right;
+}

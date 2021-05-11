@@ -4,8 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 import InputForm from '../formComponents/Input';
-import { getInspection } from '../../services/index';
-import { saveWorkOrder } from '../../services/index';
+import { getInspection, saveWorkOrder, updateStateInspection } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
 
 
@@ -47,6 +46,8 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         })()
     }, [modalWO]);
 
+
+
     const handleInputChange = (e) => {
         setDataForm({
             ...dataForm,
@@ -74,6 +75,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         if (observation.valid === true && activity.valid === true && estimatedTime.valid === true) {
             dataForm.id_inspection = parseInt(dataForm.id_inspection.split(' ')[2])
             const response = await saveWorkOrder(dataForm);
+            await updateStateInspection(dataForm.id_inspection)
             if (response.data.success == true) {
                 alertNotification("Echo", "Orden de trabajo guardada con exito!", "success");
             } else {

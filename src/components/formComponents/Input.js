@@ -17,9 +17,12 @@ const InputForm = ({ name, handleInputChange, label, type, state, setState, regu
         }
     }
 
+    console.log(state)
+
     const focus = () => {
-        if (state.input.length === 0)
+        if (state.input.length === 0) {
             setState({ input: '', valid: null })
+        }
     }
 
     return (
@@ -29,9 +32,9 @@ const InputForm = ({ name, handleInputChange, label, type, state, setState, regu
                 className={state.valid ? "is-valid" : "is-invalid"}
                 type={type}
                 name={name}
-                onChange={onChange, handleInputChange}
+                onChange={handleInputChange}
                 onFocus={focus}
-                onKeyUp={validation}
+                onKeyDown={validation}
                 onBlur={validation}
                 value={value && value}
             />

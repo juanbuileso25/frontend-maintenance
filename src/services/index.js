@@ -52,6 +52,18 @@ export async function updateInspection(id, dataUpdate) {
     }
 }
 
+export async function updateStateInspection(id) {
+    try {
+        const response = await axios({
+            url: `${API_URL}/inspection/update-state/${id}`,
+            method: 'PUT'
+        });
+        return response;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export async function updateWorkOrder(id, dataUpdate) {
     try {
         const response = await axios({
