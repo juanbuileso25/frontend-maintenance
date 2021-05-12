@@ -8,6 +8,8 @@ import Sidebar from "./components/layuot/Sidebar";
 import SearchInspection from "./components/inspection/SearchInspection";
 import WorkOrder from "./components/workOrder/WorkOrder";
 import SearchWorkOrder from "./components/workOrder/SearchWorkOrder";
+import Corrective from "./components/maintenance/corrective/Corrective";
+import Preventive from "./components/maintenance/preventive/Preventive";
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
           <Switch>
             <Route exact path="/search-inspection/:id" component={SearchInspection} />
             <Route exact path="/search-work-order/:id" component={SearchWorkOrder} />
+            <Route exact path="/maintenances/correctives" component={Corrective} />
+            <Route exact path="/maintenances/preventives" component={Preventive} />
             <Route exact path="/work-order" component={WorkOrder} />
             <Route exact path="/inspection" component={Inspection} />
             <Route exact path="/" component={Home} />

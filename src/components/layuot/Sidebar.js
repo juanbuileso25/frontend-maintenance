@@ -50,17 +50,17 @@ const Sidebar = () => {
 
                 <UncontrolledCollapse toggler="#toggler">
                     <li className="ml-4 nav-item">
-                        <a className="nav-link text-gray active">
+                        <Link to="/maintenances/preventives" className="nav-link text-gray active">
                             <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
-                        Preventivos
-                    </a>
+                            Preventivos
+                        </Link>
                     </li>
 
                     <li className="ml-4 nav-item">
-                        <a className="nav-link text-gray active">
+                        <Link to="/maintenances/correctives" className="nav-link text-gray active">
                             <FontAwesomeIcon icon={faFileSignature} className="mr-3 fa-fw" />
-                        Correctivos
-                    </a>
+                            Correctivos
+                        </Link>
                     </li>
                 </UncontrolledCollapse>
 
