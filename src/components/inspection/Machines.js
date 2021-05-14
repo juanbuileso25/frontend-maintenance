@@ -3,23 +3,19 @@ import { Link } from "react-router-dom";
 
 import ModalI from './ModalRegister';
 import ModalWO from '../workOrder/ModalRegister';
-import ModalC from '../maintenance/corrective/ModalRegister';
-import ModalP from '../maintenance/preventive/ModalRegister';
 
 
-const Machines = ({ machine, workOrder, corrective, preventive }) => {
+const Machines = ({ machine, workOrder }) => {
 
     const [modalI, setModalI] = useState(false);
     const [modalWO, setModalWO] = useState(false);
-    const [modalC, setModalC] = useState(false);
-    const [modalP, setModalP] = useState(false)
+
 
     const toggleI = () => setModalI(!modalI);
     const toggleWO = () => setModalWO(!modalWO);
-    const toggleC = () => setModalC(!modalC)
-    const toggleP = () => setModalP(!modalP)
 
-    console.log(modalC)
+
+
     return (
         <div className="col-sm-4 mt-4">
             <Fragment>
@@ -29,7 +25,7 @@ const Machines = ({ machine, workOrder, corrective, preventive }) => {
                     <div className="card-body">
                         <h4 className=" mt-1 mb-3 text-center">{machine.name}</h4>
                         <div className="text-center">
-                            <button className="ml-4 btn btn-primary" onClick={corrective === "corrective" ? () => setModalC(true) : workOrder === "workOrder" ? () => setModalWO(true) : preventive === "preventive" ? () => setModalP(true) : () => setModalI(true)}>
+                            <button className="ml-4 btn btn-primary" onClick={workOrder === "workOrder" ? () => setModalWO(true) : () => setModalI(true)}>
                                 <i className="fas fa-plus-circle mr-1"></i>
                                     Registrar
                             </button>
@@ -56,17 +52,7 @@ const Machines = ({ machine, workOrder, corrective, preventive }) => {
                     machine={machine}
                 />
 
-                <ModalC
-                    modalC={modalC}
-                    toggle={toggleC}
-                    machine={machine}
-                />
 
-                <ModalP
-                    modalP={modalP}
-                    toggle={toggleP}
-                    machine={machine}
-                />
             </Fragment>
         </div>
 

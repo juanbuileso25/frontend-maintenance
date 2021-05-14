@@ -226,7 +226,15 @@ const ModalEdit = ({ modalEdit, workOrderSelected, toggleEdit, idUpdate, workOrd
                         <Col sm={4}>
                             <Input type="date" name="date_aprobbal" value={dataFormEdit.date_aprobbal} onChange={handleInputChange} />
                         </Col>
-                        <Label for="zone" sm={2}>Firma</Label>
+
+
+                    </FormGroup>
+                    <FormGroup row>
+                        <Label for="date_WO" sm={2}>Firma</Label>
+                        <Col sm={4}>
+                            <Input type="file" name="date_aprobbal" />
+                        </Col>
+
 
                     </FormGroup>
                 </Form>
