@@ -3,34 +3,68 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, La
 
 import { updateInspection } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
-import InputForm from '../formComponents/Input';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspections, idUpdate }) => {
 
     const [dataFormEdit, setDataFormEdit] = useState({})
-
-    const [typeInspection, setTypeInspection] = useState({})
-    const [observation, setObservation] = useState({})
-    const [formValid, setFormValid] = useState(true)
-
-    console.log(typeInspection)
+    const [errors, setErrors] = useState({
+        type_inspection: {
+            msg: '',
+            error: false
+        },
+        observation_i: {
+            msg: '',
+            error: false
+        }
+    })
 
     useEffect(() => {
         (() => {
             setDataFormEdit(inspectionSelected);
-            setTypeInspection({ input: inspectionSelected.type_inspection, valid: true })
-            setObservation({ input: inspectionSelected.observation_i, valid: true })
+            console.log(dataFormEdit)
         })()
     }, [modal])
 
-    const regularExpression = /^[a-zA-ZÀ-ÿ\s]{1,40}$/;
 
-    const sendDataFormUpdate = async () => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setDataFormEdit({
+            ...dataFormEdit,
+            [name]: value
+        })
+        setErrors({
+            ...errors,
+            [name]: {
+                msg: '',
+                error: false
+            }
+        })
+    }
 
-        if (typeInspection.valid === true && observation.valid === true) {
+    const validateForm = (dataFormEdit, errors, setErrors) => {
+
+        let error = false;
+        const copyForm = { ...errors };
+        if (dataFormEdit.type_inspection === '') {
+            copyForm.type_inspection.msg = "El campo tipo inspecciòn es requerido";
+            copyForm.type_inspection.error = true;
+            error = true;
+        }
+
+        if (dataFormEdit.observation_i === '') {
+            copyForm.observation_i.msg = "El campo observación es requerido";
+            copyForm.observation_i.error = true;
+            error = true;
+        }
+        setErrors(copyForm);
+        return error;
+
+    }
+
+    const sendDataFormUpdate = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm(dataFormEdit, errors, setErrors)) {
             inspectionSelected.date_i = inspectionSelected.date_i.split('T')[0]
 
             const response = await updateInspection(idUpdate, dataFormEdit);
@@ -41,25 +75,17 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
             } else {
                 alertNotification("Error", "No se ha modificado la inspección!", "error");
             }
-            setFormValid(true)
-            setTypeInspection({ input: '', valid: null })
-            setObservation({ input: '', valid: null })
+
             toggle();
-        } else {
-            setFormValid(false)
+
         }
 
+
+
+
     }
 
-    const handleInputChange = (e) => {
-        setDataFormEdit({
-            ...dataFormEdit,
-            [e.target.name]: e.target.value
-        })
-        setTypeInspection({ ...typeInspection, input: e.target.value })
-        setObservation({ ...observation, input: e.target.value })
-        setFormValid(true)
-    }
+    // const { form, handleChange, handleSubmit } = useFormEdit(dataFormEdit, validateForm, toggle);
 
     return (
         <div>
@@ -68,56 +94,56 @@ const ModalEdit = ({ modal, toggle, inspectionSelected, inspections, setInspecti
                 <ModalBody>
                     <Form>
 
-                        <InputForm
-                            label="Tipo Inspección"
-                            type="text"
-                            handleInputChange={handleInputChange}
-                            name="type_inspection"
-                            state={typeInspection}
-                            setState={setTypeInspection}
-                            value={dataFormEdit.type_inspection}
-                            regularExpression={regularExpression}
-                        />
+                        <FormGroup>
+                            <Label for="type_inspection">Tipo Inspección</Label>
+                            <Input
+                                className={errors.type_inspection.error && "is-invalid"}
+                                type="text"
+                                name="type_inspection"
+                                onChange={handleChange}
 
-                        <InputForm
-                            label="Observación"
-                            type="text"
-                            handleInputChange={handleInputChange}
-                            name="observation_i"
-                            state={observation}
-                            setState={setObservation}
-                            value={dataFormEdit.observation_i}
-                            regularExpression={regularExpression}
-                        />
+                                value={dataFormEdit.type_inspection}
+                                required
+                            />
+                            {errors.type_inspection.error && <p className="mt-2 invalid-input">{errors.type_inspection.msg}</p>}
+                        </FormGroup>
+
+
+                        <FormGroup>
+                            <Label for="observation_i">Observación</Label>
+                            <Input
+                                className={errors.observation_i.error && "is-invalid"}
+                                type="text"
+                                name="observation_i"
+                                onChange={handleChange}
+                                value={dataFormEdit.observation_i}
+                                required
+                            />
+                            {errors.observation_i.error && <p className="mt-2 invalid-input">{errors.observation_i.msg}</p>}
+                        </FormGroup>
+
 
                         <FormGroup>
                             <Label for="exampleSelect">Requiere Mantenimiento</Label>
-                            <Input type="select" name="maintenance" value={dataFormEdit.maintenance} onChange={handleInputChange}>
+                            <Input type="select" name="maintenance" value={dataFormEdit.maintenance} onChange={handleChange}>
                                 <option>Si</option>
                                 <option>No</option>
                             </Input>
                         </FormGroup>
                         <FormGroup>
                             <Label for="exampleSelect">Encargado</Label>
-                            <Input type="select" name="employee" value={dataFormEdit.employee} onChange={handleInputChange}>
+                            <Input type="select" name="employee" value={dataFormEdit.employee} onChange={handleChange}>
                                 <option>Didier</option>
                                 <option>Anderson</option>
                                 <option>Jose</option>
                             </Input>
                         </FormGroup>
                     </Form>
-                    {
-                        formValid === false &&
-                        <div>
-                            <Label className="invalid">Complete los campos correctamente
-                                    <FontAwesomeIcon icon={faTimesCircle} className="ml-3 fa-fw" />
-                            </Label>
-                        </div>
-                    }
+
                 </ModalBody>
                 <ModalFooter>
                     <Button color="primary" onClick={sendDataFormUpdate}>Guardar</Button>
-                    <Button color="danger" onClick={() => { toggle(); setFormValid(true); setTypeInspection({ input: '', valid: null }); setObservation({ input: '', valid: null }) }} >Cancel</Button>
+                    <Button color="danger" onClick={() => { toggle(); }} >Cancel</Button>
                 </ModalFooter>
             </Modal>
         </div>

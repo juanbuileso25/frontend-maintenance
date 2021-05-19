@@ -1,8 +1,6 @@
 
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 
-
-
 import { useFormRegister } from '../../hooks/inspections/useFormRegister';
 
 const ModalRegister = ({ modal, toggle, machine }) => {
@@ -88,8 +86,6 @@ const ModalRegister = ({ modal, toggle, machine }) => {
                                 />
                                 {form.type_inspection.error && <p className="mt-2 invalid-input">{form.type_inspection.msg}</p>}
                             </FormGroup>
-
-
 
                             <FormGroup>
                                 <Label for="date">Fecha</Label>
