@@ -15,6 +15,8 @@ const Inspection = () => {
 
     const toggle = () => setIsOpen(!isOpen);
 
+    console.log("Emanuel")
+
 
     useEffect(() => {
         async function loadMachines() {
@@ -33,6 +35,9 @@ const Inspection = () => {
         <Fragment>
 
             <h2 className="text-center titulo">INSPECCIONES A MAQUINAS</h2>
+
+            <Button onClick={() => { alert('Le diste click') }}>Emanuel</Button>
+
 
             <hr></hr>
 

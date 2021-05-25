@@ -1,21 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Form, FormGroup, Label, Input, Col, Row } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
-import InputForm from '../formComponents/Input';
 import { getInspection, saveWorkOrder, updateStateInspection } from '../../services/index';
 import { alertNotification } from '../../services/alerts/alert';
 
 
 const ModalRegister = ({ modalWO, toggle, machine }) => {
 
-    const [observation, setObservation] = useState({ input: '', valid: null })
-    const [activity, setActivity] = useState({ input: '', valid: null })
-    const [estimatedTime, setEstimatedTime] = useState({ input: '', valid: null })
-    const [formValid, setFormValid] = useState(true)
-
     const [inspections, setInspections] = useState([]);
+    const [errors, setErrors] = useState({
+        observation_wo: {
+            msg: '',
+            error: false
+        },
+        activity: {
+            msg: '',
+            error: false
+        },
+        estimated_time: {
+            msg: '',
+            error: false
+        }
+    });
 
     const [dataForm, setDataForm] = useState({
         id_inspection: 0,
@@ -25,15 +31,11 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         zone: 'Soplado',
         employee: 'Didier',
         type_maintenance: 'Preventivo',
+        observation_wo: '',
         activity: '',
         estimated_time: ''
     });
 
-    const regularExpression = {
-        observation: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-        activity: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-        estimated_time: /^[0-9\.]{1,3}$/
-    };
 
     useEffect(() => {
         (async () => {
@@ -46,33 +48,52 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
         })()
     }, [modalWO]);
 
-
-
-    const handleInputChange = (e) => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
         setDataForm({
             ...dataForm,
-            [e.target.name]: e.target.value
+            [name]: value
         })
-        setObservation({
-            ...observation,
-            input: e.target.value
+        setErrors({
+            ...errors,
+            [name]: {
+                msg: '',
+                error: false
+            }
         })
-        setActivity({
-            ...activity,
-            input: e.target.value
-        })
-        setEstimatedTime({
-            ...estimatedTime,
-            input: e.target.value
-        })
-        setFormValid(true)
+    }
+
+    const validateForm = (dataForm, errors, setErrors) => {
+
+        let error = false;
+        const copyForm = { ...errors };
+        if (dataForm.observation_wo === '') {
+            copyForm.observation_wo.msg = "El campo observación es requerido";
+            copyForm.observation_wo.error = true;
+            error = true;
+        }
+
+        if (dataForm.activity === '') {
+            copyForm.activity.msg = "El campo actividad es requerido";
+            copyForm.activity.error = true;
+            error = true;
+        }
+
+        if (dataForm.estimated_time === '') {
+            copyForm.estimated_time.msg = "El campo tiempo estimado es requerido";
+            copyForm.estimated_time.error = true;
+            error = true;
+        }
+        setErrors(copyForm);
+        return error;
+
     }
 
     const sendDataForm = async (e) => {
 
         e.preventDefault();
 
-        if (observation.valid === true && activity.valid === true && estimatedTime.valid === true) {
+        if (!validateForm(dataForm, errors, setErrors)) {
             dataForm.id_inspection = parseInt(dataForm.id_inspection.split(' ')[2])
             const response = await saveWorkOrder(dataForm);
             await updateStateInspection(dataForm.id_inspection)
@@ -81,13 +102,8 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
             } else {
                 alertNotification("Error", "No se ha guardado la orden de trabajo !", "error");
             }
-            setFormValid(true)
-            setObservation({ input: '', valid: null })
-            setActivity({ input: '', valid: null })
-            setEstimatedTime({ input: '', valid: null })
+
             toggle();
-        } else {
-            setFormValid(false)
         }
 
     }
@@ -105,11 +121,11 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                     <FormGroup row>
                         <Label for="date_WO" sm={2}>Fecha</Label>
                         <Col sm={4}>
-                            <Input type="date" name="date_wo" onChange={handleInputChange} />
+                            <Input type="date" name="date_wo" onChange={handleChange} />
                         </Col>
                         <Label for="zone" sm={2}>Zona</Label>
                         <Col sm={4}>
-                            <Input type="select" name="zone" onChange={handleInputChange}>
+                            <Input type="select" name="zone" onChange={handleChange}>
                                 <option>Soplado</option>
                                 <option>Inyección</option>
                                 <option>Taller</option>
@@ -122,7 +138,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                     <FormGroup row>
                         <Label for="employee" sm={2} >Encargado</Label>
                         <Col sm={4}>
-                            <Input type="select" name="employee" onChange={handleInputChange}>
+                            <Input type="select" name="employee" onChange={handleChange}>
                                 <option>Didier</option>
                                 <option>Anderson</option>
                                 <option>Jose</option>
@@ -130,7 +146,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                         </Col>
                         <Label for="type_maintenance" sm={2}>Mantenimiento</Label>
                         <Col sm={4}>
-                            <Input type="select" name="type_maintenance" onChange={handleInputChange}>
+                            <Input type="select" name="type_maintenance" onChange={handleChange}>
                                 <option>Preventivo</option>
                                 <option>Correctivo</option>
                             </Input>
@@ -141,7 +157,7 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                     <FormGroup row>
                         <Label for="inspection" sm={2}>Inspección</Label>
                         <Col sm={10}>
-                            <Input type="select" name="id_inspection" onChange={handleInputChange}>
+                            <Input type="select" name="id_inspection" onChange={handleChange}>
                                 <option>Seleccione una opcion</option>
                                 {
                                     inspections.map(inspection => (
@@ -154,15 +170,18 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
 
                     <hr />
                     <FormGroup>
-                        <InputForm
-                            state={observation}
-                            setState={setObservation}
-                            type="textarea"
+                        <Label for="observation_wo">Observación</Label>
+                        <Input
+                            className={errors.observation_wo.error && "is-invalid"}
+                            type="text"
                             name="observation_wo"
-                            label="Observación"
-                            handleInputChange={handleInputChange}
-                            regularExpression={regularExpression.observation}
+                            onChange={handleChange}
+                            value={dataForm.observation_wo}
+                            required
                         />
+                        {errors.observation_wo.error && <p className="mt-2 invalid-input">{errors.observation_wo.msg}</p>}
+
+
                     </FormGroup>
                     <hr />
                     <FormGroup>
@@ -171,44 +190,43 @@ const ModalRegister = ({ modalWO, toggle, machine }) => {
                     <hr />
                     <Row form>
                         <Col md={6}>
-                            <InputForm
-                                state={activity}
-                                setState={setActivity}
+
+                            <Label for="activity">Actividad</Label>
+                            <Input
+                                className={errors.activity.error && "is-invalid"}
                                 type="text"
                                 name="activity"
-                                label="Actividad a realizar"
-                                handleInputChange={handleInputChange}
-                                regularExpression={regularExpression.activity}
+                                onChange={handleChange}
+                                value={dataForm.activity}
+                                required
                             />
+                            {errors.activity.error && <p className="mt-2 invalid-input">{errors.activity.msg}</p>}
                         </Col>
                         <Col md={6}>
-                            <InputForm
-                                state={estimatedTime}
-                                setState={setEstimatedTime}
-                                type="number"
+
+                            <Label for="activity">Tiempo estimado</Label>
+                            <Input
+                                className={errors.estimated_time.error && "is-invalid"}
+                                type="text"
                                 name="estimated_time"
-                                label="Tiempo estimado(h)"
-                                handleInputChange={handleInputChange}
-                                regularExpression={regularExpression.estimated_time}
+                                onChange={handleChange}
+                                value={dataForm.estimated_time}
+                                required
                             />
+                            {errors.estimated_time.error && <p className="mt-2 invalid-input">{errors.estimated_time.msg}</p>}
+
+
 
 
                         </Col>
                     </Row>
                 </Form>
-                {
-                    formValid === false &&
-                    <div>
-                        <Label className="invalid">Complete los campos correctamente
-                                    <FontAwesomeIcon icon={faTimesCircle} className="ml-3 fa-fw" />
-                        </Label>
-                    </div>
-                }
+
             </ModalBody>
 
             <ModalFooter>
                 <Button color="primary" onClick={sendDataForm}>Guardar</Button>
-                <Button color="danger" onClick={() => { toggle(); setFormValid(true); setObservation({ input: '', valid: null }); setActivity({ input: '', valid: null }); setEstimatedTime({ input: '', valid: null }) }}>Cancel</Button>
+                <Button color="danger" onClick={() => { toggle() }}>Cancel</Button>
             </ModalFooter>
         </Modal>
     );

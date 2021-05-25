@@ -44,8 +44,6 @@ const ModalRegister = ({ modal, toggle, machine }) => {
         }
     }
 
-    const regularExpression = /[a-zA-Z]$/;
-
     const validationForm = (form, setForm) => {
         let errors = false;
         const copyForm = { ...form };
